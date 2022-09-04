@@ -1,0 +1,31 @@
+#container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.child {
+  width: 200px;
+  height: 200px;
+}
+
+#child1 {
+  background-color: red;
+}
+
+#child2 {
+  background-color: green;
+}
+
+#child3 {
+  background-color: blue;
+}
+
+.signup-form-test {
+  width: 300px;
+}
+
+mat-form-field {
+  width: 300px;
+}
