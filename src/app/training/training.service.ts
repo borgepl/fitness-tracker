@@ -47,4 +47,8 @@ export class TrainingService {
     return { ...this.runningExercise}
   }
 
+  getCompletedorCancelledExercises() {
+    return this.exercises.slice();
+  }
+
 }
