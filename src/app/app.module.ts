@@ -20,6 +20,12 @@ import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.com
 import { StopTrainingComponent } from './training/current-training/stop-training.component';
 import { AuthService } from './auth/auth.service';
 import { TrainingService } from './training/training.service';
+import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
+import { environment } from '../environments/environment';
+import { provideAuth,getAuth } from '@angular/fire/auth';
+import { provideFirestore,getFirestore } from '@angular/fire/firestore';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
 @NgModule({
   declarations: [
@@ -42,7 +48,12 @@ import { TrainingService } from './training/training.service';
     ReactiveFormsModule,
     FlexLayoutModule,
     MaterialModule,
-    AppRoutingModule
+    AppRoutingModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'fr-BE'},
