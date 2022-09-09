@@ -10,6 +10,7 @@
     <ul fxLayout fxLayoutGap="10px" class="navigation-items">
       <li *ngIf="!isAuth"><a routerLink="/signup">SignUp</a></li>
       <li *ngIf="!isAuth"><a routerLink="/login">Login</a></li>
+      <li *ngIf="!isAuth"><a style="cursor: pointer;" (click)="onLoginGoogle()">Google</a></li>
       <li *ngIf="isAuth"><a routerLink="/training">Training</a></li>
       <li *ngIf="isAuth"><a style="cursor: pointer;" (click)="onLogout()">Logout</a></li>
     </ul>
