@@ -1,7 +1,15 @@
 import { Injectable } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
+import { collectionData, Firestore } from "@angular/fire/firestore";
+
 import { Subject, map } from "rxjs";
 import { Excercise } from "./excercise.model";
+
+import {
+  CollectionReference,
+  DocumentData,
+  collection,
+} from '@firebase/firestore';
 
 @Injectable()
 export class TrainingService {
@@ -20,8 +28,19 @@ export class TrainingService {
   private runningExercise: Excercise;
   private exercises: Excercise[] = [];
 
-  constructor( private db: AngularFirestore) {}
+  private exerciseCollection: CollectionReference<DocumentData>;
 
+  constructor( private db: AngularFirestore, private firestore: Firestore) {}
+
+  fetchCollection() {
+    this.exerciseCollection = collection(this.firestore, 'availableExercises');
+    collectionData(this.exerciseCollection, { idField: 'id'}).subscribe(
+       (exercises: Excercise[]) => {
+          console.log(exercises);
+          this.availableExercises = exercises;
+          this.exercisesChanged.next([...this.availableExercises]);
+       });
+  }
   fetchAvailableExercises() {
 
     this.db.collection('availableExercises').snapshotChanges()
