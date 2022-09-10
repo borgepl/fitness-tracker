@@ -54,7 +54,7 @@ import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/fir
     MaterialModule,
     AppRoutingModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    //provideAuth(() => getAuth()),
+    provideAuth(() => getAuth()),
    /*  provideAuth(() => {
       const auth = getAuth();
       if (environment.useEmulators) {

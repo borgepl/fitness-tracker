@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Auth, authState } from "@angular/fire/auth";
+import { Auth, authState, createUserWithEmailAndPassword } from "@angular/fire/auth";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { Router } from "@angular/router";
 import { Subject } from "rxjs";
@@ -17,10 +17,11 @@ export class AuthService {
 
   constructor( private router: Router, private auth: AngularFireAuth,
               private trainingService: TrainingService,
-              //private fsAuth: Auth
+              private fsAuth: Auth
               ) {}
 
   initAuthListener() {
+
     this.auth.authState.subscribe(user => {
       if (user) {
         this.authSuccess();
@@ -30,7 +31,21 @@ export class AuthService {
     })
    }
 
+  registerNewUser(authdata: AuthData) {
+    createUserWithEmailAndPassword(this.fsAuth, authdata.email, authdata.password)
+    .then(usercred => {
+      console.log(usercred.user);
+      this.authSuccess();
+    })
+    .catch(
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
   registerUser(authdata: AuthData) {
+
     this.auth.createUserWithEmailAndPassword(authdata.email, authdata.password)
     .then(
       result => {
@@ -56,15 +71,20 @@ export class AuthService {
     .catch(
       error => {
         console.log(error);
+        alert(error.message);
       }
     );
   }
 
   loginWithGoogle() {
-    this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    let provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('profile');
+    provider.addScope('email');
+    this.auth.signInWithPopup(provider)
     .then(
       result => {
-        console.log(result);
+        console.log(result.credential);
+        console.log(result.user)
         this.authSuccess();
       }
     )
@@ -92,12 +112,8 @@ export class AuthService {
   }
 
   logout() {
-    this.trainingService.cancelSubscriptions();
     this.auth.signOut();
-    this.user = null;
-    this.authChange.next(false);
-    this.router.navigate(['/login']);
-    this.isAuthenticated = false;
+    // this.authFailure():
   }
 
   getUser() {
