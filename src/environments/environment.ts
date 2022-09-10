@@ -3,6 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  useEmulators: false,
   firebase: {
     projectId: 'ng-fitness-tracker-63410',
     appId: '1:283310821090:web:d2cae57f822e7c635e58bb',

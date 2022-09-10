@@ -1,7 +1,5 @@
 import { Injectable } from "@angular/core";
 import { AngularFirestore } from "@angular/fire/compat/firestore";
-import { collectionData, Firestore } from "@angular/fire/firestore";
-
 import { Subject, map } from "rxjs";
 import { Excercise } from "./excercise.model";
 
@@ -17,6 +15,7 @@ export class TrainingService {
   exerciseChanged = new Subject<Excercise>();
   exercisesChanged =  new Subject<Excercise[]>();
   finishedExercisesChanged =  new Subject<Excercise[]>();
+  private fbSubs : Subscription[]= [];
 
   private availableExercises : Excercise[] = [
     // { id: 'crunches', name: 'Crunches', duration: 30, calories: 8 },
@@ -28,21 +27,10 @@ export class TrainingService {
   private runningExercise: Excercise;
   private exercises: Excercise[] = [];
 
-  private exerciseCollection: CollectionReference<DocumentData>;
+  constructor( private db: AngularFirestore) {}
 
-  constructor( private db: AngularFirestore, private firestore: Firestore) {}
-
-  fetchCollection() {
-    this.exerciseCollection = collection(this.firestore, 'availableExercises');
-    collectionData(this.exerciseCollection, { idField: 'id'}).subscribe(
-       (exercises: Excercise[]) => {
-          console.log(exercises);
-          this.availableExercises = exercises;
-          this.exercisesChanged.next([...this.availableExercises]);
-       });
-  }
   fetchAvailableExercises() {
-
+    this.fbSubs.push(
     this.db.collection('availableExercises').snapshotChanges()
     .pipe(
       map(docArray => {
@@ -57,7 +45,7 @@ export class TrainingService {
     .subscribe((exercises: Excercise[]) => {
       this.availableExercises = exercises;
       this.exercisesChanged.next([...this.availableExercises]);
-    })
+    }));
   }
 
   getAvailableExcercises() {
@@ -106,12 +94,13 @@ export class TrainingService {
   }
 
   fetchCompletedorCancelledExercises() {
+    this.fbSubs.push(
     this.db.collection('finishedExercises').valueChanges().subscribe(
       (exercises: Excercise[]) => {
         this.exercises = exercises;
         this.finishedExercisesChanged.next(exercises)
       }
-    )
+    ))
   }
 
   getCompletedorCancelledExercises() {
@@ -120,6 +109,10 @@ export class TrainingService {
 
   private addDataToFireStore(exercise: Excercise) {
     this.db.collection('finishedExercises').add(exercise);
+  }
+
+ cancelSubscriptions() {
+    this.fbSubs.forEach(sub => sub.unsubscribe());
   }
 
 }

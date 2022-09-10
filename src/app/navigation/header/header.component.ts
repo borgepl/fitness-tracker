@@ -30,6 +30,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.authService.logout();
   }
 
+  onLoginGoogle() {
+    this.authService.loginWithGoogle();
+  }
+
   ngOnDestroy(): void {
     this.authSub.unsubscribe();
   }
