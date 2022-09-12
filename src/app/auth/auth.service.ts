@@ -7,6 +7,7 @@ import { AuthData } from "./auth-data.model";
 import { User } from "./user.model";
 import firebase from 'firebase/compat/app';
 import { TrainingService } from "../training/training.service";
+import { UIService } from "../shared/ui.service";
 
 @Injectable()
 export class AuthService {
@@ -17,7 +18,8 @@ export class AuthService {
 
   constructor( private router: Router, private auth: AngularFireAuth,
               private trainingService: TrainingService,
-              private fsAuth: Auth
+              private fsAuth: Auth,
+              private uiService: UIService
               ) {}
 
   initAuthListener() {
@@ -39,7 +41,8 @@ export class AuthService {
     })
     .catch(
       error => {
-        console.log(error);
+        this.uiService.showSnackbar(error.message, null, 3000, "end", "bottom");
+        // console.log(error);
       }
     );
   }
@@ -61,17 +64,20 @@ export class AuthService {
   }
 
   login(authdata: AuthData) {
+    this.uiService.loadingStateChanged.next(true);
     this.auth.signInWithEmailAndPassword(authdata.email, authdata.password)
     .then(
       result => {
         console.log(result);
+        this.uiService.loadingStateChanged.next(false);
         this.authSuccess();
       }
     )
     .catch(
       error => {
-        console.log(error);
-        alert(error.message);
+        // console.log(error);
+        this.uiService.loadingStateChanged.next(false);
+        this.uiService.showSnackbar(error.message, "Ok", 3000, "end", "bottom");
       }
     );
   }

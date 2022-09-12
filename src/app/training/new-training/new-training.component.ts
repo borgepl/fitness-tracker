@@ -28,7 +28,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
   ];
 
   item$: Observable<Excercise[]>;
-  exercises : Excercise[];
+  exercises : Excercise[] = [];
 
   @Output() trainingStart =  new EventEmitter<void>();
 

@@ -8,6 +8,7 @@ import {
   DocumentData,
   collection,
 } from '@firebase/firestore';
+import { UIService } from "../shared/ui.service";
 
 @Injectable()
 export class TrainingService {
@@ -28,7 +29,9 @@ export class TrainingService {
   private exercises: Excercise[] = [];
   private exerciseFbCollection: CollectionReference<DocumentData>;
 
-  constructor( private db: AngularFirestore, private readonly firestore: Firestore) {}
+  constructor( private db: AngularFirestore, private readonly firestore: Firestore,
+               private uiService: UIService
+              ) {}
 
   fetchCollection() {
     this.exerciseFbCollection = collection(this.firestore, 'availableExercises');
@@ -37,6 +40,8 @@ export class TrainingService {
       (exercises: Excercise[]) => {
         this.availableExercises = exercises;
         this.exercisesChanged.next([...this.availableExercises]);
+      }, error => {
+        this.uiService.showSnackbar("fetching Exercises failed. Please try again later.", null, 3000, "end", "bottom");
       })
     );
   }
@@ -54,10 +59,14 @@ export class TrainingService {
         })
       })
     )
-    .subscribe((exercises: Excercise[]) => {
+    .subscribe(
+      (exercises: Excercise[]) => {
       this.availableExercises = exercises;
-      this.exercisesChanged.next([...this.availableExercises]);
-    }));
+      this.exercisesChanged.next([...this.availableExercises])
+      }, error => {
+        this.uiService.showSnackbar(error.message, null, 3000, "end", "bottom");
+      })
+    );
   }
 
   getAvailableExcercises() {
