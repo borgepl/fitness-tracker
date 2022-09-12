@@ -13,9 +13,8 @@ import { AuthService } from './auth/auth.service';
 import { TrainingService } from './training/training.service';
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
-import { provideAuth,getAuth, connectAuthEmulator } from '@angular/fire/auth';
+
 import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 
 import { USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/compat/auth';
 import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
@@ -36,17 +35,10 @@ import { TrainingModule } from './training/training.module';
     FlexLayoutModule,
     MaterialModule,
     AppRoutingModule,
+
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAuth(() => getAuth()),
-   /*  provideAuth(() => {
-      const auth = getAuth();
-      if (environment.useEmulators) {
-        connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
-      }
-      return auth;
-    }), */
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule,
+
     AuthModule,
     TrainingModule
   ],
