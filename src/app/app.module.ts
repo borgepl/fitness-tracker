@@ -15,12 +15,12 @@ import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 
 import { AngularFireModule } from '@angular/fire/compat';
-
 import { USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/compat/auth';
-import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
+import { AngularFirestoreModule, USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
 import { UIService } from './shared/ui.service';
 import { AuthModule } from './auth/auth.module';
-import { TrainingModule } from './training/training.module';
+import { connectFirestoreEmulator, getFirestore, provideFirestore } from '@angular/fire/firestore';
+
 
 @NgModule({
   declarations: [
@@ -35,12 +35,17 @@ import { TrainingModule } from './training/training.module';
     FlexLayoutModule,
     MaterialModule,
     AppRoutingModule,
-
+    AuthModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     AngularFireModule.initializeApp(environment.firebase),
-
-    AuthModule,
-    TrainingModule
+    AngularFirestoreModule,
+    provideFirestore(() => {
+      const fireStore = getFirestore();
+      if (environment.useEmulators) {
+        connectFirestoreEmulator(fireStore, 'localhost', 8080);
+      }
+      return fireStore;
+    }),
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'fr-BE'},
