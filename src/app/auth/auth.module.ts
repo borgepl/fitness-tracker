@@ -1,22 +1,17 @@
-import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { provideAuth, getAuth, connectAuthEmulator } from "@angular/fire/auth";
 import { AngularFireAuthModule } from "@angular/fire/compat/auth";
-import { FlexLayoutModule } from "@angular/flex-layout";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { ReactiveFormsModule } from "@angular/forms";
 import { environment } from "src/environments/environment";
-import { MaterialModule } from "../material.module";
+import { SharedModule } from "../shared/shared.module";
 import { LoginComponent } from "./login/login.component";
 import { SignupComponent } from "./signup/signup.component";
 
 @NgModule({
   declarations: [ SignupComponent, LoginComponent ],
   imports: [
-    CommonModule,
-    FormsModule,
+    SharedModule,
     ReactiveFormsModule,
-    FlexLayoutModule,
-    MaterialModule,
     AngularFireAuthModule,
     //provideAuth(() => getAuth()),
      provideAuth(() => {
