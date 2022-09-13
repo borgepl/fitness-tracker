@@ -3,7 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
-import { Excercise } from '../excercise.model';
+import { Exercise } from '../excercise.model';
 import { TrainingService } from '../training.service';
 
 @Component({
@@ -15,7 +15,7 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   sub: Subscription;
   displayedColumns: string[] = ['date', 'name', 'calories', 'duration', 'state'];
-  dataSource = new MatTableDataSource<Excercise>;
+  dataSource = new MatTableDataSource<Exercise>;
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -39,7 +39,7 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy 
     //this.dataSource.data = this.trainingService.getCompletedorCancelledExercises();
     this.sub =
     this.trainingService.finishedExercisesChanged.subscribe(
-      (exercises: Excercise[]) => {
+      (exercises: Exercise[]) => {
         this.dataSource.data = exercises;
       }
     );

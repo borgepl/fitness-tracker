@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Excercise } from '../excercise.model';
+import { Exercise } from '../excercise.model';
 import { TrainingService } from '../training.service';
 import { Firestore, collectionData, collection } from '@angular/fire/firestore';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -19,7 +19,7 @@ interface ExcerciseInterface {
 export class NewTrainingComponent implements OnInit, OnDestroy {
 
   subs: Subscription[]= [];
-  myExercises: Excercise[] = [];
+  myExercises: Exercise[] = [];
 
   trainings: ExcerciseInterface[] = [
     {value: 'crunches-0', viewValue: 'Crunches'},
@@ -27,8 +27,8 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     {value: 'sidelunges-2', viewValue: 'Side Lunges'},
   ];
 
-  item$: Observable<Excercise[]>;
-  exercises : Excercise[] = [];
+  item$: Observable<Exercise[]>;
+  exercises : Exercise[] = [];
 
   @Output() trainingStart =  new EventEmitter<void>();
 

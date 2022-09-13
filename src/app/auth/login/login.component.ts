@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   onLogin() {
     // console.log(this.loginForm.value);
-    this.authService.login({
+    this.authService.loginUser({
       email: this.loginForm.value.email,
       password: this.loginForm.value.password
     })

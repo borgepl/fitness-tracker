@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Auth, authState, createUserWithEmailAndPassword } from "@angular/fire/auth";
+import { Auth, authState, createUserWithEmailAndPassword,
+          signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "@angular/fire/auth";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { Router } from "@angular/router";
 import { Subject } from "rxjs";
@@ -18,9 +19,19 @@ export class AuthService {
 
   constructor( private router: Router, private auth: AngularFireAuth,
               private trainingService: TrainingService,
-              private fsAuth: Auth,
+              private fbAuth: Auth,
               private uiService: UIService
               ) {}
+
+  initAuthState() {
+    authState(this.fbAuth).subscribe(user => {
+      if (user) {
+        this.authSuccess();
+      } else {
+        this.authFailure();
+      }
+    })
+  }
 
   initAuthListener() {
 
@@ -34,7 +45,7 @@ export class AuthService {
    }
 
   registerNewUser(authdata: AuthData) {
-    createUserWithEmailAndPassword(this.fsAuth, authdata.email, authdata.password)
+    createUserWithEmailAndPassword(this.fbAuth, authdata.email, authdata.password)
     .then(usercred => {
       console.log(usercred.user);
       this.authSuccess();
@@ -82,21 +93,46 @@ export class AuthService {
     );
   }
 
-  loginWithGoogle() {
-    let provider = new firebase.auth.GoogleAuthProvider();
-    provider.addScope('profile');
-    provider.addScope('email');
-    this.auth.signInWithPopup(provider)
+  loginUser(authdata: AuthData) {
+    this.uiService.loadingStateChanged.next(true);
+    signInWithEmailAndPassword(this.fbAuth, authdata.email, authdata.password)
     .then(
       result => {
-        console.log(result.credential);
-        console.log(result.user)
+        console.log(result);
+        this.uiService.loadingStateChanged.next(false);
+        this.authSuccess();
+      }
+    )
+    .catch(
+      error => {
+        // console.log(error);
+        this.uiService.loadingStateChanged.next(false);
+        this.uiService.showSnackbar(error.message, "Ok", 3000, "end", "bottom");
+      }
+    );
+  }
+
+  loginWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    provider.addScope('profile');
+    provider.addScope('email');
+    signInWithPopup(this.fbAuth, provider)
+    .then(
+      result => {
+        // This is the signed-in user
+        const user = result.user;
+        console.log(user);
+        // This gives you a Google Access Token.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        console.log(token);
         this.authSuccess();
       }
     )
     .catch(
       error => {
         console.log(error);
+        this.uiService.showSnackbar(error.message, "Ok", 3000, "end", "bottom");
       }
     );
   }
