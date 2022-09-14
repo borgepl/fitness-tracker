@@ -4,7 +4,7 @@
     <mat-card-title fxLayoutAlign="center">New Training Exercise</mat-card-title>
     <mat-card-subtitle fxLayoutAlign="center">Time to start a workout!</mat-card-subtitle>
     <mat-card-content fxLayoutAlign="center">
-      <mat-form-field appearance="fill">
+      <mat-form-field *ngIf="exercises.length > 0" appearance="fill">
         <mat-label>Select your training:</mat-label>
         <mat-select ngModel name="exercise" required>
 <!--           <mat-option *ngFor="let training of trainings" [value]="training.value">
@@ -15,8 +15,9 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-spinner *ngIf="exercises.length <= 0"></mat-spinner>
     </mat-card-content>
-    <mat-card-actions fxLayoutAlign="center">
+    <mat-card-actions *ngIf="exercises.length > 0" fxLayoutAlign="center">
       <button type="submit" mat-button [disabled]="f.invalid">Start</button>
     </mat-card-actions>
   </mat-card>
