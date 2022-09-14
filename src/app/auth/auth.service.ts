@@ -12,6 +12,7 @@ import { TrainingService } from "../training/training.service";
 export class AuthService {
 
   authChange = new Subject<boolean>();
+  authUser = new Subject<string>();
   private user: User;
   private isAuthenticated = false;
 
@@ -24,6 +25,7 @@ export class AuthService {
 
     this.auth.authState.subscribe(user => {
       if (user) {
+        this.authUser.next(user.email);
         this.authSuccess();
       } else {
         this.authFailure();
